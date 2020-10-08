@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pin Generator</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="pin-generator half-width">
+                    <input id="pin-generate" class="form-control" type="text">
+                    <button onclick="generatePin()" class="generate-btn">Generate Pin</button>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="input-section half-width">
+                    <input id="pin-enter" class="form-control" type="text" value="">
+                    <div class="numbers">
+                        <div class="calc-body">
+                            <div class="calc-button-row">
+                              <div  class="number button">7</div>
+                              <div  class="number button">8</div>
+                              <div  class="number button">9</div>
+                            </div>
+                            <div class="calc-button-row">
+                              <div  class="number button">4</div>
+                              <div  class="number button">5</div>
+                              <div  class="number button">6</div>
+                            </div>
+                            <div class="calc-button-row">
+                              <div  class="number button">1</div>
+                              <div  class="number button">2</div>
+                              <div  class="number button">3</div>
+                            </div>
+                            <div class="calc-button-row">
+                              <div onclick="backSpace()" class="button"><</div>
+                              <div  class="number button">0</div>
+                              <div onclick="clearInput()" class="button">C</div>
+                            </div>
+                            <div>
+                                <button onclick="handleSubmission()" id="submit-btn" class="submit-btn" type="submit">Submit</button>
+                                <p class="action-left"> <span id="submit-limit">3</span> try left</p>
+                            </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="notify-section">
+            <p id="unmatch-notify" class="notify">❌ Pin Didn't Match, Please try again</p>
+            <p id="match-notify" class="notify">✅ Pin Matched... Secret door is opening for you</p>
+            <p id="emptyinput-notify" class="notify">You have'nt entered any pin. Please enter your pin.</p>
+        </div>
+    </div>
+    <script>
+        function generatePin(){
+            const pinGenerate = document.getElementById('pin-generate');
+            const randomNumber = Math.floor(Math.random() * 9000) + 1000;
+            pinGenerate.value = randomNumber;
+
+            document.getElementById('unmatch-notify').style.display = 'none';
+            document.getElementById('match-notify').style.display = 'none';
+            document.getElementById('emptyinput-notify').style.display = 'none';
+        }
+
+        const button = document.getElementsByClassName('number');
+        for (let i = 0; i < button.length; i++) {
+            const numberButton = button[i];
+            numberButton.addEventListener('click', function getenteredPin(event){
+                const numberInput = document.getElementById('pin-enter');
+                numberInput.value = numberInput.value + event.target.innerText;
+            })
+        }
+
+        function backSpace() {
+            const pinEnter = document.getElementById("pin-enter").value;
+            document.getElementById("pin-enter").value = pinEnter.substr(0, pinEnter.length - 1);
+        }
+        function clearInput(){
+            document.getElementById('pin-enter').value = "";
+        }
+        
+        function handleSubmission(){
+            const pinGenerate = document.getElementById('pin-generate').value;
+            const pinEnter = document.getElementById('pin-enter').value;
+                if(pinEnter == ""){
+                    document.getElementById('emptyinput-notify').style.display = 'block';
+                    document.getElementById('match-notify').style.display = 'none';
+                    document.getElementById('unmatch-notify').style.display = 'none';
+                }
+                else if(pinGenerate == pinEnter){
+                    document.getElementById('match-notify').style.display = 'block';
+                    document.getElementById('unmatch-notify').style.display = 'none';
+                    document.getElementById('emptyinput-notify').style.display = 'none';
+                }
+                else{
+                    document.getElementById('unmatch-notify').style.display = 'block';
+                    document.getElementById('match-notify').style.display = 'none';
+                    document.getElementById('emptyinput-notify').style.display = 'none';
+                }
+
+            document.getElementById('pin-enter').value = "";
+
+            const submitTime = document.getElementById('submit-limit');
+            const submitLimit = parseInt(submitTime.innerText);
+            let newSubmitLimit;
+                if(submitLimit != 0){
+                    newSubmitLimit = submitLimit -1;
+                    submitTime.innerText = newSubmitLimit;
+                }
+                if(newSubmitLimit == 0 ){
+                    document.getElementById('submit-btn').disabled = true;
+                    document.getElementById('submit-btn').style.backgroundColor ='#8a97db';
+                }
+            }
+    </script>
+</body>
+</html>
